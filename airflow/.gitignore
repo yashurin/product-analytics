@@ -1,0 +1,4 @@
+.astro/
+__pycache__/
+*.pyc
+logs/

@@ -1,0 +1,52 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Files landed under data/raw.
+    tables:
+      - name: orders
+        description: Sample e-commerce orders from data/raw/orders.csv.
+        config:
+          external_location: "read_csv('data/raw/orders.csv', header=true)"
+
+models:
+  - name: stg_orders
+    description: One cleaned order per raw row, with typed columns and a line amount.
+    columns:
+      - name: order_id
+        description: Order identifier.
+        data_tests:
+          - unique
+          - not_null
+      - name: order_date
+        description: Date the order was placed.
+        data_tests:
+          - not_null
+      - name: status
+        description: Order status, stored in lowercase.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["completed", "shipped", "processing", "cancelled", "returned"]
+
+  - name: fct_daily_orders
+    description: One row per order date with order count, revenue, and average order value. Cancelled orders are excluded.
+    columns:
+      - name: order_date
+        description: Order date.
+        data_tests:
+          - unique
+          - not_null
+      - name: order_count
+        description: Number of non-cancelled orders on this date.
+        data_tests:
+          - not_null
+      - name: total_revenue
+        description: Sum of line amounts for non-cancelled orders.
+        data_tests:
+          - not_null
+      - name: avg_order_value
+        description: Total revenue divided by order count.
+        data_tests:
+          - not_null

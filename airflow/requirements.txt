@@ -1,0 +1,4 @@
+# Installed into /usr/local/airflow/dbt_venv by the Dockerfile.
+# BashOperator comes from apache-airflow-providers-standard, already in the Astro Runtime image.
+dbt-duckdb
+duckdb

@@ -1,0 +1,21 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# dbt and the local DuckDB warehouse
+target/
+dbt_packages/
+logs/
+.user.yml
+*.duckdb
+*.duckdb.wal
+
+# Local secrets (Snowflake password, Airflow connections)
+.env
+airflow/airflow_settings.yaml
+
+# Astro local runtime
+airflow/.astro/
+
+.DS_Store

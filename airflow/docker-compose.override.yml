@@ -1,0 +1,8 @@
+# Local Astro runs tasks in the scheduler. Mount the repo read-only so the DAG
+# can see the dbt project and data/raw/orders.csv.
+# Start the CLI from airflow/. PWD is that directory, so PWD/.. is the repo.
+# If the mount is empty, set PRODUCT_ANALYTICS_HOST_DIR to the repo path.
+services:
+  scheduler:
+    volumes:
+      - "${PRODUCT_ANALYTICS_HOST_DIR:-${PWD}/..}:/usr/local/airflow/product-analytics:ro"
