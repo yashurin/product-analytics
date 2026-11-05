@@ -15,7 +15,11 @@ logs/
 .env
 airflow/airflow_settings.yaml
 
-# Astro local runtime
-airflow/.astro/
+# Astro local runtime. Keep airflow/.astro/config.yaml; that file marks the project.
+airflow/.astro/standalone/
+airflow/.astro/worktrees/
+airflow/.astro/*.local.yml
+airflow/.astro/*.local.yaml
+airflow/.astro/config.yaml.lock
 
 .DS_Store

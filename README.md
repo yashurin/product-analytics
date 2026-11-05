@@ -50,9 +50,12 @@ product-analytics/
     ├── requirements.txt
     ├── packages.txt
     ├── docker-compose.override.yml
+    ├── .astro/
+    │   └── config.yaml
     ├── dags/
     │   └── transform_orders.py
     ├── include/
+    │   └── check_daily_orders.py
     └── plugins/
 ```
 
@@ -62,7 +65,7 @@ product-analytics/
 
 ## Airflow
 
-Orchestration is an Astro project in `airflow/`. The layout is already created, so you do not need `astro dev init` here. Run `astro dev init` only in an empty directory when you want the Astro CLI to generate a new project. Running it inside `airflow/` fails because that directory is not empty.
+Orchestration is an Astro project in `airflow/`. `airflow/.astro/config.yaml` is what the Astro CLI looks for, so you do not need `astro dev init` here. Run `astro dev init` only in an empty directory when you want the CLI to generate a new project. Running it inside `airflow/` fails because that directory is not empty.
 
 `airflow/requirements.txt` lists `dbt-duckdb` and `duckdb`. The Dockerfile installs them into `/usr/local/airflow/dbt_venv`, separate from Airflow's own libraries. `BashOperator` comes from `apache-airflow-providers-standard`, which the Astro Runtime image already includes.
 

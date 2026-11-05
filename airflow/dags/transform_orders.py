@@ -14,6 +14,9 @@ WORK_DIR = "/tmp/product-analytics"
 RAW_ORDERS = f"{PROJECT_DIR}/data/raw/orders.csv"
 DBT = "/usr/local/airflow/dbt_venv/bin/dbt"
 PYTHON = "/usr/local/airflow/dbt_venv/bin/python"
+# include/ is mounted into the scheduler. A heredoc in the task command is not:
+# the indented closing delimiter never matches, and Python then sees leading spaces.
+CHECK_DAILY = "/usr/local/airflow/include/check_daily_orders.py"
 
 
 @dag(
@@ -56,20 +59,10 @@ def transform_orders():
 
     check_daily_orders = BashOperator(
         task_id="check_daily_orders",
-        bash_command=f"""
-        set -euo pipefail
-        "{PYTHON}" - <<'PY'
-        import duckdb
-
-        con = duckdb.connect("{WORK_DIR}/analytics.duckdb", read_only=True)
-        days, orders = con.sql(
-            "select count(*), coalesce(sum(order_count), 0) from main.fct_daily_orders"
-        ).fetchall()[0]
-        print("fct_daily_orders days=%s orders=%s" % (days, orders))
-        if days < 1 or orders < 1:
-            raise SystemExit("fct_daily_orders is empty")
-        PY
-        """,
+        bash_command=(
+            "set -euo pipefail\n"
+            f'"{PYTHON}" "{CHECK_DAILY}" "{WORK_DIR}/analytics.duckdb"\n'
+        ),
     )
 
     check_raw_orders >> dbt_build >> check_daily_orders
